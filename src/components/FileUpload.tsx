@@ -43,17 +43,21 @@ const FileUpload = () => {
   return (
     <div className="fileupload">
       <form>
-        <input
-          type="file"
-          accept="image/png, image/jpeg"
-          multiple
-          onChange={handleFileChange}
-        />
+        <label className="custom-file-upload">
+          <input
+              type="file"
+              accept="image/png, image/jpeg, video/*"
+              multiple
+              onChange={handleFileChange}
+            />
+          {files ? files.length + " files selected" : 'Browse your files'}
+        </label>
         <button
           onClick={handleUpload}
           type="button"
         >
-          Upload files
+          Upload
+          {/* <FontAwesomeIcon icon={faPaperPlane} /> */}
         </button>
       </form>
     </div>

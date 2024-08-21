@@ -11,8 +11,6 @@ const FileUpload = () => {
   const handleUpload = async () => {
     if (files) {
       [...files].forEach(async (file) => {
-        const formData = new FormData();
-        formData.append('file', file);
         fetch("https://xn7w6qku2k.execute-api.us-east-2.amazonaws.com/url/" + file.name)
           .then((response) => {
             if (!response.ok) {
@@ -20,14 +18,17 @@ const FileUpload = () => {
             }
             return response.json();
           })
-          .then((url) => {
-            console.log(url)
-            return fetch(url, {
-              method: 'PUT',
-              headers: {
-                  'Content-Type': 'multipart/form-data'
-              },
-              body: formData
+          .then((response) => {
+            console.log("response", response)
+            const postData = new FormData()
+            for(const key in response.fields) {
+              postData.append(key, response.fields[key]);
+            }
+            postData.append('file', file);
+
+            return fetch(response.url, {
+              method: 'POST',
+              body: postData,
             });
           })
           .then((response) => {

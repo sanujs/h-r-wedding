@@ -5,9 +5,9 @@ const Timeline = () => {
       <div className="event">
         <div className="event-text">
           <h2>1. Baratt</h2>
-          <p>Rohith, his family, and friends arrive at the venue, accomponied by music, a beating dhol (drum), and their best dance moves.</p>
+          <img src="src/assets/dhol1.jpg"/>
         </div>
-        {/* <img src="src/assets/dhol.jpg"/> */}
+        <p>Rohith, his family, and friends arrive at the venue, accomponied by music, a beating dhol (drum), and their best dance moves.</p>
       </div>
       <div className="event">
         <div className="event-text">

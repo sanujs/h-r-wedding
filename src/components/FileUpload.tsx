@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const FileUpload = () => {
   const [files, setFiles] = useState<FileList | null>(null);
+  const [status, setStatus] = useState<'initial' | 'uploading' | 'success' | 'fail'>('initial')
+  useEffect(() => {
+    setStatus('initial');
+  }, [files])
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.files);
     if (e.target.files) {
@@ -10,6 +14,7 @@ const FileUpload = () => {
   }
   const handleUpload = async () => {
     if (files) {
+      setStatus('uploading');
       [...files].forEach(async (file) => {
         fetch("https://xn7w6qku2k.execute-api.us-east-2.amazonaws.com/url/" + file.name)
           .then((response) => {
@@ -21,7 +26,7 @@ const FileUpload = () => {
           .then((response) => {
             console.log("response", response)
             const postData = new FormData()
-            for(const key in response.fields) {
+            for (const key in response.fields) {
               postData.append(key, response.fields[key]);
             }
             postData.append('file', file);
@@ -33,11 +38,27 @@ const FileUpload = () => {
           })
           .then((response) => {
             console.log(response)
+            setStatus('success');
+          })
+          .catch(() => {
+            setStatus('fail');
           })
       });
     } else {
       console.log("no files");
     }
+  }
+  const uploadText = () => {
+    if (status == 'initial' && !files) {
+      return "Browse your files";
+    } else if (status == 'initial' && files) {
+      return files.length + " files selected";
+    } else if (status == 'uploading') {
+      return "Uploading...";
+    } else if (status == 'success') {
+      return "Successfully uploaded!"
+    }
+    return "Failed to upload"
   }
 
   return (
@@ -45,19 +66,21 @@ const FileUpload = () => {
       <form>
         <label className="custom-file-upload">
           <input
-              type="file"
-              accept="image/png, image/jpeg, video/*"
-              multiple
-              onChange={handleFileChange}
-            />
-          {files ? files.length + " files selected" : 'Browse your files'}
+            type="file"
+            accept="image/png, image/jpeg, video/*"
+            multiple
+            onChange={handleFileChange}
+          />
+          {uploadText()}
         </label>
+        <br />
+        <br />
         <button
           onClick={handleUpload}
           type="button"
+          disabled={status != 'initial' || files == null}
         >
           Upload
-          {/* <FontAwesomeIcon icon={faPaperPlane} /> */}
         </button>
       </form>
     </div>

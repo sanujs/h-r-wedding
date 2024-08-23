@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, SetStateAction } from 'react';
+import { useDropzone } from 'react-dropzone';
 
 const FileUpload = () => {
   const [files, setFiles] = useState<FileList | null>(null);
@@ -52,7 +53,7 @@ const FileUpload = () => {
     if (status == 'initial' && !files) {
       return "Browse your files";
     } else if (status == 'initial' && files) {
-      return files.length + " files selected";
+      return files.length == 1 ? files.length + " file selected" : files.length + " files selected";
     } else if (status == 'uploading') {
       return "Uploading...";
     } else if (status == 'success') {
@@ -60,19 +61,16 @@ const FileUpload = () => {
     }
     return "Failed to upload"
   }
+  const onDrop = useCallback((acceptedFiles) => {setFiles(acceptedFiles)}, []);
+  const {getRootProps, getInputProps} = useDropzone({onDrop, accept: {"image/*": [], 'video/*': []}})
 
   return (
     <div className="fileupload">
       <form>
-        <label className="custom-file-upload">
-          <input
-            type="file"
-            accept="image/png, image/jpeg, video/*"
-            multiple
-            onChange={handleFileChange}
-          />
-          {uploadText()}
-        </label>
+        <div className="custom-file-upload" {...getRootProps()}>
+          <input {...getInputProps()} />
+            {uploadText()}
+        </div>
         <br />
         <br />
         <button

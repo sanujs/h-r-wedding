@@ -51,7 +51,7 @@ img {
 }
 
 input[type="file"] {
-  display: none;
+  /* display: none; */
 }
 
 .fileupload {
@@ -67,7 +67,7 @@ input[type="file"] {
   cursor: pointer;
   background-color: rgb(243, 243, 243);
   width: 200px;
-  height: 50px;
+  height: 70px;
   place-items: center;
   text-align: center;
   font-family: "DM Sans", sans-serif;

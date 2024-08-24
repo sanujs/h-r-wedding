@@ -1,23 +1,19 @@
+import pRetry from 'p-retry';
 import { useEffect, useState, useCallback, SetStateAction } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 const FileUpload = () => {
   const [files, setFiles] = useState<FileList | null>(null);
   const [status, setStatus] = useState<'initial' | 'uploading' | 'success' | 'fail'>('initial')
+  const [successCount, setSuccessCount] = useState<number>(0);
   useEffect(() => {
     setStatus('initial');
   }, [files])
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.files);
-    if (e.target.files) {
-      setFiles(e.target.files)
-    }
-  }
   const handleUpload = async () => {
     if (files) {
       setStatus('uploading');
       [...files].forEach(async (file) => {
-        fetch("https://xn7w6qku2k.execute-api.us-east-2.amazonaws.com/url/" + file.name)
+        const uploadFile = fetch("https://xn7w6qku2k.execute-api.us-east-2.amazonaws.com/url/" + file.name)
           .then((response) => {
             if (!response.ok) {
               throw response;
@@ -38,12 +34,21 @@ const FileUpload = () => {
             });
           })
           .then((response) => {
+            setSuccessCount(count=>count+1);
             console.log(response)
             setStatus('success');
           })
-          .catch(() => {
+          .catch((e) => {
             setStatus('fail');
-          })
+            console.log(e);
+          });
+        const result = await pRetry(uploadFile, {
+          onFailedAttempt: error => {
+            console.log(`Attempt ${error.attemptNumber} failed.`)
+          },
+          retries: 5
+        })
+        console.log(result);
       });
     } else {
       console.log("no files");
@@ -57,7 +62,7 @@ const FileUpload = () => {
     } else if (status == 'uploading') {
       return "Uploading...";
     } else if (status == 'success') {
-      return "Successfully uploaded!"
+      return `Successfully uploaded ${successCount} files!`
     }
     return "Failed to upload"
   }

@@ -4,6 +4,10 @@ import garland from "../assets/garland.png";
 import kanyadan from "../assets/kanyadan.png";
 import flame from "../assets/flame.png";
 import footprint from "../assets/footprint2.png";
+import mangalsutra from "../assets/mangalsutra.png";
+import vidai from "../assets/vidai.png";
+import scarftie from "../assets/scarftie.png";
+
 const Timeline = () => {
 
   return (
@@ -46,9 +50,39 @@ const Timeline = () => {
       <div className="event">
         <div className="event-text">
           <h2>Mangal Phere</h2>
-          <img src={footprint}/>
+          <img src={scarftie}/>
         </div>
         <p>Harena and Rohith now circle the fire seven times. This ritual affirms principles of Dharma (virtue), Artha (wealth), Kama (family), and Moksha (enlightenment).</p>
+      </div>
+      <div className="event">
+        <div className="event-text">
+          <h2>Saptapadi</h2>
+          <img src={footprint}/>
+        </div>
+        <p>Harena and Rohith take seven steps together. Each step signifies a vow that they promise to uphold together:</p>
+        <ol>
+          <li>An invocation to god for the plentitude of food and nourishment.</li>
+          <li>A prayer for mental, spiritual and physical strength.</li>
+          <li>Fulfillment of spiritual obligations.</li>
+          <li>An attainment of knowledge, happiness, and love in all walks of life.</li>
+          <li>A blessing for strong and virtuous children.</li>
+          <li>A prayer for longevity and bountiful seasons together.</li>
+          <li>A prayer for true companionship in a life filled with understanding, loyalty, and unity.</li>
+        </ol>
+      </div>
+      <div className="event">
+        <div className="event-text">
+          <h2>Mangal Sutra and Sindoor</h2>
+          <img src={mangalsutra}/>
+        </div>
+        <p>Harena is given a mangal sutra (sacred necklace) and sindoor (vermillion powder), symbolizing Rohith's promise and respect. Wedding bands are exchanged and the ceremony has now concluded. Let's grab lunch and send off the couple.</p>
+      </div>
+      <div className="event">
+        <div className="event-text">
+          <h2>Vidai</h2>
+          <img src={vidai}/>
+        </div>
+        <p>After lunch and what was probably far too many photos, it's time for the couple's parents and family to send off the couple. Blessings in hand, the couple will return at the evening reception.</p>
       </div>
     </div>
   );

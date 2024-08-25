@@ -1,9 +1,9 @@
 import pRetry from 'p-retry';
-import { useEffect, useState, useCallback, SetStateAction } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 const FileUpload = () => {
-  const [files, setFiles] = useState<FileList | null>(null);
+  const [files, setFiles] = useState<File[] | null>(null);
   const [status, setStatus] = useState<'initial' | 'uploading' | 'success' | 'fail'>('initial')
   const [successCount, setSuccessCount] = useState<number>(0);
   useEffect(() => {
@@ -11,6 +11,7 @@ const FileUpload = () => {
   }, [files])
   const handleUpload = async () => {
     if (files) {
+      setSuccessCount(0);
       setStatus('uploading');
       [...files].forEach(async (file) => {
         const uploadFile = fetch("https://xn7w6qku2k.execute-api.us-east-2.amazonaws.com/url/" + file.name)
@@ -34,15 +35,19 @@ const FileUpload = () => {
             });
           })
           .then((response) => {
-            setSuccessCount(count=>count+1);
+            if (response.ok) {
+              setSuccessCount(count=>count+1);
+              setStatus('success');
+            }
             console.log(response)
-            setStatus('success');
+            return response;
           })
           .catch((e) => {
             setStatus('fail');
             console.log(e);
+            return e;
           });
-        const result = await pRetry(uploadFile, {
+        const result = await pRetry(await uploadFile, {
           onFailedAttempt: error => {
             console.log(`Attempt ${error.attemptNumber} failed.`)
           },
@@ -62,11 +67,17 @@ const FileUpload = () => {
     } else if (status == 'uploading') {
       return "Uploading...";
     } else if (status == 'success') {
-      return `Successfully uploaded ${successCount} files!`
+      if (files && successCount > 0 && successCount != files.length) {
+        return `Uploaded ${successCount}/${files.length} files!`
+      } else {
+        return "Success ✔️"
+      }
     }
-    return "Failed to upload"
+    return "Failed ❌"
   }
-  const onDrop = useCallback((acceptedFiles) => {setFiles(acceptedFiles)}, []);
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    setFiles(acceptedFiles)
+  }, []);
   const {getRootProps, getInputProps} = useDropzone({onDrop, accept: {"image/*": [], 'video/*': []}})
 
   return (
